@@ -13,5 +13,13 @@ module.exports = {
         req.io.emit('tweet', tweet);
 
         return res.json(tweet);
+    },
+
+    async delete(req, res) {
+        const tweet = await Tweet.findByIdAndDelete(req.params.id);
+
+        req.io.emit('deleted');
+
+        return res.json(tweet);
     }
 };
