@@ -12,5 +12,6 @@ routes.delete('/tweets/:id', TweetController.delete);
 routes.post('/likes/:id', LikeController.store);
 
 routes.post('/register', AuthController.store);
+routes.post('/authenticate', AuthController.index);
 
 module.exports = routes;
