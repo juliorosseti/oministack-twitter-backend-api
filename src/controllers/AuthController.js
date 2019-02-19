@@ -1,7 +1,18 @@
-const User = require('../models/User');
-const bcrypt = require('bcryptjs');
+const User       = require('../models/User');
+const authConfig = require('../config/auth');
+
+const bcrypt     = require('bcryptjs');
+const jwt        = require('jsonwebtoken');
+
+function generateToken(params = {})
+{
+    return jwt.sign(params, authConfig.secret, {
+        expiresIn: 86400
+    });
+}
 
 module.exports = {
+
     async store(req, res) {
 
         const { email } = req.body;
@@ -15,7 +26,10 @@ module.exports = {
 
             user.password = undefined; // not return hash
 
-            return res.send({ user });
+            return res.send({
+                user,
+                token: generateToken({ id: user.id })
+            })
 
         } catch (err)
         {
@@ -29,7 +43,6 @@ module.exports = {
 
         const user = await User.findOne({ email }).select('+password');
 
-
         try {
 
             if (!user)
@@ -40,7 +53,10 @@ module.exports = {
 
             user.password = undefined;
 
-            return res.send({ user });
+            return res.send({
+                user,
+                token: generateToken({ id: user.id })
+            });
 
         } catch (err)
         {
